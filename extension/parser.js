@@ -2,15 +2,15 @@
 // Pure functions: HTML string → structured data objects. No side effects, no network calls.
 // Selectors verified against Continia Document Capture live site on 2026-04-01.
 
-// Actual column layout (verified 2026-04-01):
-// td[1]=checkbox  td[2]=actions  td[3]=Document  td[4]=Naam
-// td[5]=Commentaren  td[6]=Bedrag excl.BTW  td[7]=Bedrag incl.BTW
-// td[8]=Documentdatum  td[9]=Vervaldatum  td[10]=empty
+// Raw HTML column layout (verified 2026-04-01 via fetch of unrendered HTML):
+// td[1]=hidden  td[2]=hidden  td[3]=checkbox  td[4]=actions
+// td[5]=Document  td[6]=Naam  td[7]=Commentaren  td[8]=Bedrag excl.BTW
+// td[9]=Bedrag incl.BTW  td[10]=Documentdatum  td[11]=Vervaldatum  td[12]=empty
 export const CONFIG = Object.freeze({
   invoiceRowSelector:    'tr.approvalLine',  // each invoice row in #approvalsTable
-  invoiceNumberSelector: 'td:nth-child(3)',  // "Document" column
-  invoiceVendorSelector: 'td:nth-child(4)',  // "Naam" column
-  invoiceAmountSelector: 'td:nth-child(6)',  // "Bedrag excl. BTW" column
+  invoiceNumberSelector: 'td:nth-child(5)',  // "Document" column
+  invoiceVendorSelector: 'td:nth-child(6)',  // "Naam" column
+  invoiceAmountSelector: 'td:nth-child(8)',  // "Bedrag excl. BTW" column
 });
 
 /**
