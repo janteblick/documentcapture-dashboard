@@ -68,7 +68,11 @@ async function fetchCompanyLinks(baseUrl, companyCode) {
     baseUrl
   ).href;
 
-  const res = await fetch(sectionUrl, { credentials: 'include', mode: 'cors' });
+  const res = await fetch(sectionUrl, {
+    credentials: 'include',
+    mode: 'cors',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  });
   if (!res.ok) throw new Error(`Company list unreachable (HTTP ${res.status})`);
 
   const html = await res.text();
