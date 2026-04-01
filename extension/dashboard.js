@@ -71,22 +71,18 @@ function renderClusterResult(clusterName, result) {
   countEl.textContent = total;
   countEl.className   = total === 0 ? 'cluster-count zero' : 'cluster-count';
 
-  if (total === 0) {
-    bodyEl.innerHTML = '<div class="no-invoices">✓ No pending approvals</div>';
-    return;
-  }
-
   const hasVendor = allInvoices.some(inv => inv.vendor);
 
   bodyEl.innerHTML = result.companies
-    .filter(c => c.invoices.length > 0)
     .map(c => `
       <div class="company-group">
         <div class="company-name">
           ${c.name}
           <span class="inv-badge">${c.invoices.length}</span>
         </div>
-        <table class="invoice-table">
+        ${c.invoices.length === 0
+          ? '<div class="no-invoices">✓ No pending approvals</div>'
+          : `<table class="invoice-table">
           <thead>
             <tr>
               <th>Number</th><th>Date</th><th>Amount</th>
@@ -102,7 +98,8 @@ function renderClusterResult(clusterName, result) {
                 ${hasVendor ? `<td>${inv.vendor || ''}</td>` : ''}
               </tr>`).join('')}
           </tbody>
-        </table>
+        </table>`
+        }
       </div>`).join('');
 }
 
