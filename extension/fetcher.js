@@ -16,7 +16,7 @@ async function loginToCluster(baseUrl, username, password) {
     mode: 'cors',
   });
   if (!loginPageRes.ok) {
-    throw new Error(`Loginpagina niet bereikbaar (HTTP ${loginPageRes.status})`);
+    throw new Error(`Login page unreachable (HTTP ${loginPageRes.status})`);
   }
 
   const loginHtml  = await loginPageRes.text();
@@ -39,18 +39,18 @@ async function loginToCluster(baseUrl, username, password) {
     redirect: 'follow',
   });
   if (!loginRes.ok) {
-    throw new Error(`Login request mislukt (HTTP ${loginRes.status})`);
+    throw new Error(`Login request failed (HTTP ${loginRes.status})`);
   }
 
   const finalPath = new URL(loginRes.url).pathname.toLowerCase();
   if (finalPath.includes('/account/login')) {
-    throw new Error('Login mislukt — controleer gebruikersnaam en wachtwoord');
+    throw new Error('Login failed — check username and password');
   }
 
   // Landing URL is /{companyCode}/purchase/approval — extract the first path segment
   const pathParts   = new URL(loginRes.url).pathname.split('/').filter(Boolean);
   const companyCode = pathParts[0];
-  if (!companyCode) throw new Error('Kon bedrijfscode niet bepalen na inloggen');
+  if (!companyCode) throw new Error('Could not determine company code after login');
 
   return companyCode;
 }
@@ -69,7 +69,7 @@ async function fetchCompanyLinks(baseUrl, companyCode) {
   ).href;
 
   const res = await fetch(sectionUrl, { credentials: 'include', mode: 'cors' });
-  if (!res.ok) throw new Error(`Bedrijvenlijst niet bereikbaar (HTTP ${res.status})`);
+  if (!res.ok) throw new Error(`Company list unreachable (HTTP ${res.status})`);
 
   const html = await res.text();
   const doc  = new DOMParser().parseFromString(html, 'text/html');
@@ -94,7 +94,7 @@ async function fetchCompanyLinks(baseUrl, companyCode) {
  */
 export async function fetchPage(url) {
   const res = await fetch(url, { credentials: 'include', mode: 'cors' });
-  if (!res.ok) throw new Error(`Pagina niet bereikbaar (HTTP ${res.status}): ${url}`);
+  if (!res.ok) throw new Error(`Page unreachable (HTTP ${res.status}): ${url}`);
   return res.text();
 }
 
@@ -110,7 +110,7 @@ export async function loginAndFetchAll(baseUrl, username, password) {
   const companyLinks = await fetchCompanyLinks(baseUrl, companyCode);
 
   if (companyLinks.length === 0) {
-    throw new Error('Geen bedrijven gevonden in deze cluster');
+    throw new Error('No companies found in this cluster');
   }
 
   const companies = await Promise.all(

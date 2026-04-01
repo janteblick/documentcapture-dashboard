@@ -19,7 +19,7 @@ document.getElementById('save').addEventListener('click', async () => {
   const refreshInterval = Number(document.getElementById('refresh-interval').value);
 
   if (!username || !password) {
-    showStatus('Vul gebruikersnaam en wachtwoord in.', 'error');
+    showStatus('Please enter a username and password.', 'error');
     return;
   }
 
@@ -31,7 +31,7 @@ document.getElementById('save').addEventListener('click', async () => {
     : Date.now() + rememberDays * 24 * 60 * 60 * 1000;
 
   await chrome.storage.local.set({ username, password, rememberDays, expiresAt, refreshInterval });
-  showStatus('Instellingen opgeslagen.', 'success');
+  showStatus('Settings saved.', 'success');
   btn.disabled = false;
 });
 

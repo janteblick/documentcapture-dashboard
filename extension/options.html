@@ -1,42 +1,42 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Instellingen — DocumentCapture Dashboard</title>
+  <title>Settings — DocumentCapture Dashboard</title>
   <link rel="stylesheet" href="options.css">
 </head>
 <body>
   <main>
-    <h1>Instellingen</h1>
+    <h1>Settings</h1>
 
     <section>
-      <h2>Inloggegevens</h2>
+      <h2>Credentials</h2>
 
-      <label for="username">Gebruikersnaam</label>
-      <input type="text" id="username" placeholder="DOMEIN\gebruikersnaam" autocomplete="username">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="DOMAIN\username" autocomplete="username">
 
-      <label for="password">Wachtwoord</label>
+      <label for="password">Password</label>
       <input type="password" id="password" autocomplete="current-password">
 
-      <label for="remember">Onthoud inloggegevens</label>
+      <label for="remember">Remember credentials</label>
       <select id="remember">
-        <option value="1">1 dag</option>
-        <option value="7" selected>7 dagen</option>
-        <option value="30">30 dagen</option>
-        <option value="0">Altijd</option>
+        <option value="1">1 day</option>
+        <option value="7" selected>7 days</option>
+        <option value="30">30 days</option>
+        <option value="0">Always</option>
       </select>
 
-      <label for="refresh-interval">Automatisch vernieuwen</label>
+      <label for="refresh-interval">Auto-refresh interval</label>
       <select id="refresh-interval">
-        <option value="1">Elke minuut</option>
-        <option value="5" selected>Elke 5 minuten</option>
-        <option value="15">Elke 15 minuten</option>
-        <option value="30">Elke 30 minuten</option>
+        <option value="1">Every minute</option>
+        <option value="5" selected>Every 5 minutes</option>
+        <option value="15">Every 15 minutes</option>
+        <option value="30">Every 30 minutes</option>
       </select>
     </section>
 
     <div class="actions">
-      <button id="save">Opslaan</button>
+      <button id="save">Save</button>
     </div>
 
     <div id="status" class="status hidden"></div>

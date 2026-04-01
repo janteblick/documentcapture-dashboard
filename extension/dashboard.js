@@ -25,8 +25,8 @@ async function getCredentials() {
 function renderNotConfigured() {
   document.getElementById('main-content').innerHTML = `
     <div class="not-configured">
-      <p>Geen inloggegevens ingesteld of de onthoud-periode is verlopen.</p>
-      <p><a href="#" id="open-options">Open instellingen</a></p>
+      <p>No credentials configured or the remember period has expired.</p>
+      <p><a href="#" id="open-options">Open settings</a></p>
     </div>`;
   document.getElementById('open-options')?.addEventListener('click', e => {
     e.preventDefault();
@@ -40,10 +40,10 @@ function renderInitialCards() {
       <div class="cluster-header">
         <span class="cluster-name">${c.name}</span>
         <span class="cluster-count">…</span>
-        <a href="${c.url}" target="_blank" class="cluster-open-btn">Openen ↗</a>
+        <a href="${c.url}" target="_blank" class="cluster-open-btn">Open ↗</a>
       </div>
       <div class="cluster-body">
-        <div class="loading"><span class="spinner"></span> Laden…</div>
+        <div class="loading"><span class="spinner"></span> Loading…</div>
       </div>
     </div>`).join('');
 }
@@ -72,7 +72,7 @@ function renderClusterResult(clusterName, result) {
   countEl.className   = total === 0 ? 'cluster-count zero' : 'cluster-count';
 
   if (total === 0) {
-    bodyEl.innerHTML = '<div class="no-invoices">✓ Geen openstaande facturen</div>';
+    bodyEl.innerHTML = '<div class="no-invoices">✓ No pending approvals</div>';
     return;
   }
 
@@ -89,8 +89,8 @@ function renderClusterResult(clusterName, result) {
         <table class="invoice-table">
           <thead>
             <tr>
-              <th>Nummer</th><th>Datum</th><th>Bedrag</th>
-              ${hasVendor ? '<th>Leverancier</th>' : ''}
+              <th>Number</th><th>Date</th><th>Amount</th>
+              ${hasVendor ? '<th>Vendor</th>' : ''}
             </tr>
           </thead>
           <tbody>
@@ -110,12 +110,12 @@ function updateFooter(results) {
   const total  = results.flatMap(r => r.companies ?? []).flatMap(c => c.invoices).length;
   const errors = results.filter(r => r.error).map(r => r.clusterName);
 
-  document.getElementById('total-count').textContent = `Totaal openstaand: ${total}`;
+  document.getElementById('total-count').textContent = `Total pending: ${total}`;
   document.getElementById('error-summary').textContent = errors.length
-    ? `Fouten: ${errors.join(', ')}` : '';
+    ? `Errors: ${errors.join(', ')}` : '';
 
   document.getElementById('last-updated').textContent =
-    `Bijgewerkt: ${new Date().toLocaleTimeString('nl-BE')}`;
+    `Updated: ${new Date().toLocaleTimeString('en-BE')}`;
 }
 
 // ── Main refresh ────────────────────────────────────────────────────────────
