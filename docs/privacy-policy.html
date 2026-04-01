@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy — DocumentCapture Dashboard</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 720px; margin: 48px auto; padding: 0 24px; color: #333; line-height: 1.7; }
+    h1 { font-size: 1.6rem; color: #1a73e8; margin-bottom: 4px; }
+    h2 { font-size: 1.1rem; margin-top: 32px; color: #444; }
+    .meta { color: #888; font-size: .9rem; margin-bottom: 32px; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 4px; }
+    a { color: #1a73e8; }
+  </style>
+</head>
+<body>
+
+<h1>Privacy Policy</h1>
+<p class="meta">DocumentCapture Dashboard &mdash; Chrome Extension &mdash; Last updated: 1 April 2026</p>
+
+<h2>Overview</h2>
+<p>
+  DocumentCapture Dashboard is a browser extension that displays pending invoice approval
+  counts and details from Continia Document Capture clusters. This policy describes what
+  data the extension collects, how it is used, and how it is stored.
+</p>
+
+<h2>Data collected and stored</h2>
+<p>The extension stores the following data <strong>locally on your device only</strong>,
+using the browser's built-in <code>chrome.storage.local</code> API:</p>
+<ul>
+  <li><strong>Username and password</strong> — entered by the user in the Settings page, used solely to authenticate with the configured Continia Document Capture clusters.</li>
+  <li><strong>Cluster selection</strong> — which of the four clusters the user has enabled.</li>
+  <li><strong>Refresh interval and credential expiry</strong> — user preferences for how often the dashboard auto-refreshes and how long credentials are remembered.</li>
+</ul>
+
+<h2>How data is used</h2>
+<ul>
+  <li>Credentials are used exclusively to log in to the documentcapture.eu domains configured by your organisation.</li>
+  <li>No data is sent to any third-party server, analytics service, or external API.</li>
+  <li>No browsing history, personal information, or invoice content is collected or transmitted outside of the documentcapture.eu domains.</li>
+</ul>
+
+<h2>Data sharing</h2>
+<p>
+  The extension does not share, sell, or transmit any user data to any party other than
+  the Continia Document Capture clusters the user explicitly connects to.
+</p>
+
+<h2>Permissions used</h2>
+<ul>
+  <li><strong>storage</strong> — to save credentials and preferences locally on the device.</li>
+  <li><strong>tabs</strong> — to open a temporary background tab on the cluster domain for a same-origin API request; the tab is closed immediately after.</li>
+  <li><strong>scripting</strong> — to run a locally-bundled fetch function inside the temporary tab; no external scripts are loaded or executed.</li>
+  <li><strong>host permissions (documentcapture.eu)</strong> — to authenticate and retrieve approval data from the clusters the user has access to.</li>
+</ul>
+
+<h2>Data retention</h2>
+<p>
+  All data is stored locally and can be removed at any time by clearing the extension's
+  storage via <em>chrome://extensions</em> → <em>DocumentCapture Dashboard</em> → <em>Clear data</em>,
+  or by uninstalling the extension.
+</p>
+
+<h2>Contact</h2>
+<p>
+  Questions about this privacy policy can be directed to the person who distributed this
+  extension within your organisation.
+</p>
+
+</body>
+</html>
