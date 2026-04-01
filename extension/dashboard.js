@@ -34,8 +34,8 @@ function renderNotConfigured() {
   });
 }
 
-function renderInitialCards() {
-  document.getElementById('main-content').innerHTML = CLUSTERS.map(c => `
+function renderInitialCards(clusters) {
+  document.getElementById('main-content').innerHTML = clusters.map(c => `
     <div class="cluster-card" data-cluster="${c.name}">
       <div class="cluster-header">
         <span class="cluster-name">${c.name}</span>
@@ -132,10 +132,15 @@ async function refresh() {
     return;
   }
 
-  renderInitialCards();
+  const { enabledClusters } = await chrome.storage.local.get('enabledClusters');
+  const activeClusters = enabledClusters
+    ? CLUSTERS.filter(c => enabledClusters.includes(c.name))
+    : CLUSTERS;
+
+  renderInitialCards(activeClusters);
 
   const results = await Promise.all(
-    CLUSTERS.map(async cluster => {
+    activeClusters.map(async cluster => {
       try {
         const { companies: rawCompanies } = await loginAndFetchAll(cluster.url, creds.username, creds.password);
         const companies = rawCompanies.map(({ name, html }) => ({

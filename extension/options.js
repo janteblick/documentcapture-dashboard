@@ -1,9 +1,16 @@
+const ALL_CLUSTERS = ['Sneyers', 'Jorssen', 'Gamotors', 'Belien'];
+
 async function loadSettings() {
-  const data = await chrome.storage.local.get(['username', 'password', 'rememberDays', 'refreshInterval']);
+  const data = await chrome.storage.local.get(['username', 'password', 'rememberDays', 'refreshInterval', 'enabledClusters']);
   if (data.username != null)        document.getElementById('username').value = data.username;
   if (data.password != null)        document.getElementById('password').value = data.password;
   if (data.rememberDays != null)    document.getElementById('remember').value = String(data.rememberDays);
   if (data.refreshInterval != null) document.getElementById('refresh-interval').value = String(data.refreshInterval);
+
+  const enabled = data.enabledClusters ?? ALL_CLUSTERS;
+  document.querySelectorAll('input[name="cluster"]').forEach(cb => {
+    cb.checked = enabled.includes(cb.value);
+  });
 }
 
 function showStatus(message, type) {
@@ -30,7 +37,15 @@ document.getElementById('save').addEventListener('click', async () => {
     ? null
     : Date.now() + rememberDays * 24 * 60 * 60 * 1000;
 
-  await chrome.storage.local.set({ username, password, rememberDays, expiresAt, refreshInterval });
+  const enabledClusters = Array.from(document.querySelectorAll('input[name="cluster"]:checked'))
+    .map(cb => cb.value);
+  if (enabledClusters.length === 0) {
+    showStatus('Select at least one cluster.', 'error');
+    btn.disabled = false;
+    return;
+  }
+
+  await chrome.storage.local.set({ username, password, rememberDays, expiresAt, refreshInterval, enabledClusters });
   showStatus('Settings saved.', 'success');
   btn.disabled = false;
 });
