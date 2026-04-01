@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Parser tests</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+    .pass { color: #4ec9b0; } .fail { color: #f44747; }
+    h1 { color: #9cdcfe; margin-bottom: 12px; } h2 { color: #9cdcfe; margin-top: 16px; }
+  </style>
+</head>
+<body>
+<h1>Parser unit tests</h1>
+<div id="results"></div>
+<script type="module">
+import { parseApprovalPage } from '../parser.js';
+
+const out = document.getElementById('results');
+let passed = 0, failed = 0;
+
+function assert(desc, condition) {
+  const el = document.createElement('div');
+  if (condition) { el.className = 'pass'; el.textContent = `✓ ${desc}`; passed++; }
+  else           { el.className = 'fail'; el.textContent = `✗ ${desc}`; failed++; }
+  out.appendChild(el);
+}
+
+// Test 1: empty HTML → no companies
+const r1 = parseApprovalPage('<html><body></body></html>');
+assert('Lege HTML geeft geen bedrijven', r1.companies.length === 0);
+
+// Test 2: fallback — no company groups, plain table with invoice rows
+const r2 = parseApprovalPage(`
+  <html><body>
+    <table><tbody>
+      <tr><td>FAC-001</td><td>01/04/2026</td><td>1.250,00</td><td>Leverancier A</td></tr>
+      <tr><td>FAC-002</td><td>02/04/2026</td><td>880,00</td><td>Leverancier B</td></tr>
+    </tbody></table>
+  </body></html>`);
+assert('Fallback: 2 facturen gevonden zonder bedrijfsgroep', r2.companies[0]?.invoices.length === 2);
+assert('Factuurnummer correct uitgelezen',  r2.companies[0]?.invoices[0]?.number === 'FAC-001');
+assert('Datum correct uitgelezen',          r2.companies[0]?.invoices[0]?.date === '01/04/2026');
+assert('Bedrag correct uitgelezen',         r2.companies[0]?.invoices[1]?.amount === '880,00');
+assert('Leverancier correct uitgelezen',    r2.companies[0]?.invoices[1]?.vendor === 'Leverancier B');
+
+// Test 3: header row in tbody (should be skipped — no "number" in th)
+const r3 = parseApprovalPage(`
+  <html><body>
+    <table>
+      <thead><tr><th>Nr</th><th>Datum</th><th>Bedrag</th></tr></thead>
+      <tbody>
+        <tr><td>FAC-003</td><td>03/04/2026</td><td>500,00</td></tr>
+      </tbody>
+    </table>
+  </body></html>`);
+assert('Slechts 1 factuur (header niet meegeteld)', r3.companies[0]?.invoices.length === 1);
+assert('Juist factuurnummer in rij 1', r3.companies[0]?.invoices[0]?.number === 'FAC-003');
+
+const summary = document.createElement('h2');
+summary.textContent = `${passed} geslaagd, ${failed} mislukt`;
+out.appendChild(summary);
+</script>
+</body>
+</html>
