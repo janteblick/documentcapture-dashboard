@@ -1,15 +1,16 @@
 /**
- * Logs into a Continia Document Capture cluster and fetches the approval page.
- *
- * @param {string} baseUrl      e.g. 'https://sneyers.documentcapture.eu'
+ * fetcher.js
+ * Handles login to a Continia Document Capture cluster and discovers all companies.
+ */
+
+/**
+ * Logs into a cluster. Returns the company code extracted from the redirect URL.
+ * @param {string} baseUrl  e.g. 'https://sneyers.documentcapture.eu'
  * @param {string} username
  * @param {string} password
- * @param {string} approvalPath e.g. '/Approval'
- * @returns {Promise<string>}   HTML of the approval page
- * @throws {Error}              On login failure or network error
+ * @returns {Promise<string>} company code (e.g. 'carrossney')
  */
-export async function loginAndFetch(baseUrl, username, password, approvalPath) {
-  // Step 1: GET login page — extract CSRF token and form action
+async function loginToCluster(baseUrl, username, password) {
   const loginPageRes = await fetch(`${baseUrl}/Account/Login`, {
     credentials: 'include',
     mode: 'cors',
@@ -18,17 +19,14 @@ export async function loginAndFetch(baseUrl, username, password, approvalPath) {
     throw new Error(`Loginpagina niet bereikbaar (HTTP ${loginPageRes.status})`);
   }
 
-  const loginHtml = await loginPageRes.text();
-  const loginDoc  = new DOMParser().parseFromString(loginHtml, 'text/html');
-
-  const tokenEl = loginDoc.querySelector('input[name="__RequestVerificationToken"]');
-  const token   = tokenEl ? tokenEl.value : null;
-
-  const formEl   = loginDoc.querySelector('#loginform') || loginDoc.querySelector('form[method="post"]');
-  const rawAction = formEl ? (formEl.getAttribute('action') || '/Account/Login') : '/Account/Login';
+  const loginHtml  = await loginPageRes.text();
+  const loginDoc   = new DOMParser().parseFromString(loginHtml, 'text/html');
+  const tokenEl    = loginDoc.querySelector('input[name="__RequestVerificationToken"]');
+  const token      = tokenEl ? tokenEl.value : null;
+  const formEl     = loginDoc.querySelector('#loginform') || loginDoc.querySelector('form[method="post"]');
+  const rawAction  = formEl ? (formEl.getAttribute('action') || '/Account/Login') : '/Account/Login';
   const formAction = new URL(rawAction, baseUrl).href;
 
-  // Step 2: POST credentials
   const body = new URLSearchParams({ Email_Username: username, Password: password });
   if (token) body.append('__RequestVerificationToken', token);
 
@@ -49,15 +47,78 @@ export async function loginAndFetch(baseUrl, username, password, approvalPath) {
     throw new Error('Login mislukt — controleer gebruikersnaam en wachtwoord');
   }
 
-  // Step 3: Fetch approval page
-  const approvalUrl = new URL(approvalPath, baseUrl).href;
-  const approvalRes = await fetch(approvalUrl, {
-    credentials: 'include',
-    mode: 'cors',
+  // Landing URL is /{companyCode}/purchase/approval — extract the first path segment
+  const pathParts   = new URL(loginRes.url).pathname.split('/').filter(Boolean);
+  const companyCode = pathParts[0];
+  if (!companyCode) throw new Error('Kon bedrijfscode niet bepalen na inloggen');
+
+  return companyCode;
+}
+
+/**
+ * Fetches all company links for a cluster via the getcompanysection endpoint.
+ * The endpoint returns HTML fragments prepended to #companyList by the page's JS.
+ * @param {string} baseUrl
+ * @param {string} companyCode  current company code (used as the session lookup key)
+ * @returns {Promise<Array<{name: string, url: string}>>}
+ */
+async function fetchCompanyLinks(baseUrl, companyCode) {
+  const sectionUrl = new URL(
+    `/purchaseapproval/getcompanysection?companycode=${encodeURIComponent(companyCode)}&menuCode=purchase&subMenuCode=approval`,
+    baseUrl
+  ).href;
+
+  const res = await fetch(sectionUrl, { credentials: 'include', mode: 'cors' });
+  if (!res.ok) throw new Error(`Bedrijvenlijst niet bereikbaar (HTTP ${res.status})`);
+
+  const html = await res.text();
+  const doc  = new DOMParser().parseFromString(html, 'text/html');
+
+  // Company links: <a href="/{code}/purchase/approval"><strong>Name</strong>...</a>
+  const anchors = Array.from(doc.querySelectorAll('a[href*="/purchase/approval"]'))
+    .filter(a => !a.getAttribute('href').includes('/settings'));
+
+  return anchors.map(a => {
+    const nameEl = a.querySelector('strong');
+    const name   = nameEl
+      ? nameEl.textContent.trim()
+      : a.textContent.trim().split('\n')[0].trim();
+    return { name, url: new URL(a.getAttribute('href'), baseUrl).href };
   });
-  if (!approvalRes.ok) {
-    throw new Error(`Goedkeuringspagina niet bereikbaar (HTTP ${approvalRes.status})`);
+}
+
+/**
+ * Fetches any page using the existing session cookies.
+ * @param {string} url
+ * @returns {Promise<string>} HTML
+ */
+export async function fetchPage(url) {
+  const res = await fetch(url, { credentials: 'include', mode: 'cors' });
+  if (!res.ok) throw new Error(`Pagina niet bereikbaar (HTTP ${res.status}): ${url}`);
+  return res.text();
+}
+
+/**
+ * Full pipeline: login → discover all companies → fetch each company's approval page.
+ * @param {string} baseUrl
+ * @param {string} username
+ * @param {string} password
+ * @returns {Promise<{ companies: Array<{ name: string, html: string }> }>}
+ */
+export async function loginAndFetchAll(baseUrl, username, password) {
+  const companyCode  = await loginToCluster(baseUrl, username, password);
+  const companyLinks = await fetchCompanyLinks(baseUrl, companyCode);
+
+  if (companyLinks.length === 0) {
+    throw new Error('Geen bedrijven gevonden in deze cluster');
   }
 
-  return approvalRes.text();
+  const companies = await Promise.all(
+    companyLinks.map(async ({ name, url }) => {
+      const html = await fetchPage(url);
+      return { name, html };
+    })
+  );
+
+  return { companies };
 }

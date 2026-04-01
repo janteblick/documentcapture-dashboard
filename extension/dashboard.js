@@ -1,5 +1,5 @@
-import { loginAndFetch }              from './fetcher.js';
-import { parseApprovalPage, CONFIG }  from './parser.js';
+import { loginAndFetchAll }    from './fetcher.js';
+import { parseApprovalPage }  from './parser.js';
 
 const CLUSTERS = [
   { name: 'Sneyers',  url: 'https://sneyers.documentcapture.eu' },
@@ -140,10 +140,13 @@ async function refresh() {
   const results = await Promise.all(
     CLUSTERS.map(async cluster => {
       try {
-        const html   = await loginAndFetch(cluster.url, creds.username, creds.password, CONFIG.approvalPath);
-        const parsed = parseApprovalPage(html);
-        renderClusterResult(cluster.name, parsed);
-        return { clusterName: cluster.name, companies: parsed.companies };
+        const { companies: rawCompanies } = await loginAndFetchAll(cluster.url, creds.username, creds.password);
+        const companies = rawCompanies.map(({ name, html }) => ({
+          name,
+          invoices: parseApprovalPage(html).invoices,
+        }));
+        renderClusterResult(cluster.name, { companies });
+        return { clusterName: cluster.name, companies };
       } catch (err) {
         const errorResult = { error: err.message };
         renderClusterResult(cluster.name, errorResult);

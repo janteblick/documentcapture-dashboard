@@ -25,36 +25,55 @@ function assert(desc, condition) {
   out.appendChild(el);
 }
 
-// Test 1: empty HTML → no companies
+// Test 1: empty HTML → no invoices
 const r1 = parseApprovalPage('<html><body></body></html>');
-assert('Lege HTML geeft geen bedrijven', r1.companies.length === 0);
+assert('Lege HTML geeft geen facturen', r1.invoices.length === 0);
 
-// Test 2: fallback — no company groups, plain table with invoice rows
+// Test 2: real Continia structure — tr.approvalLine rows, columns match live site
+// Columns: Acties(1) | Document(2) | Naam(3) | Commentaren(4) | Bedrag excl.BTW(5) | Bedrag incl.BTW(6) | Documentdatum(7) | Vervaldatum(8)
 const r2 = parseApprovalPage(`
   <html><body>
-    <table><tbody>
-      <tr><td>FAC-001</td><td>01/04/2026</td><td>1.250,00</td><td>Leverancier A</td></tr>
-      <tr><td>FAC-002</td><td>02/04/2026</td><td>880,00</td><td>Leverancier B</td></tr>
-    </tbody></table>
-  </body></html>`);
-assert('Fallback: 2 facturen gevonden zonder bedrijfsgroep', r2.companies[0]?.invoices.length === 2);
-assert('Factuurnummer correct uitgelezen',  r2.companies[0]?.invoices[0]?.number === 'FAC-001');
-assert('Datum correct uitgelezen',          r2.companies[0]?.invoices[0]?.date === '01/04/2026');
-assert('Bedrag correct uitgelezen',         r2.companies[0]?.invoices[1]?.amount === '880,00');
-assert('Leverancier correct uitgelezen',    r2.companies[0]?.invoices[1]?.vendor === 'Leverancier B');
-
-// Test 3: header row in tbody (should be skipped — no "number" in th)
-const r3 = parseApprovalPage(`
-  <html><body>
-    <table>
-      <thead><tr><th>Nr</th><th>Datum</th><th>Bedrag</th></tr></thead>
+    <table id="approvalsTable">
+      <thead>
+        <tr><th>Acties</th><th>Document</th><th>Naam</th><th>Commentaren</th>
+            <th>Bedrag excl. BTW</th><th>Bedrag incl. BTW</th><th>Documentdatum</th><th>Vervaldatum</th></tr>
+      </thead>
       <tbody>
-        <tr><td>FAC-003</td><td>03/04/2026</td><td>500,00</td></tr>
+        <tr class="approvalLine pointer odd">
+          <td></td><td>FAC-2026-001</td><td>Leverancier A BV</td><td></td>
+          <td>1.250,00 EUR</td><td>1.512,50 EUR</td><td>01/03/2026</td><td>31/03/2026</td>
+        </tr>
+        <tr class="approvalLine pointer even">
+          <td></td><td>FAC-2026-002</td><td>Garage Pieter NV</td><td>spoed</td>
+          <td>880,00 EUR</td><td>1.064,80 EUR</td><td>15/03/2026</td><td>14/04/2026</td>
+        </tr>
       </tbody>
     </table>
   </body></html>`);
-assert('Slechts 1 factuur (header niet meegeteld)', r3.companies[0]?.invoices.length === 1);
-assert('Juist factuurnummer in rij 1', r3.companies[0]?.invoices[0]?.number === 'FAC-003');
+assert('2 facturen gevonden (tr.approvalLine)',       r2.invoices.length === 2);
+assert('Factuurnummer correct (kolom 2)',              r2.invoices[0].number === 'FAC-2026-001');
+assert('Leverancier correct (kolom 3)',               r2.invoices[0].vendor === 'Leverancier A BV');
+assert('Bedrag excl. BTW correct (kolom 5)',          r2.invoices[0].amount === '1.250,00 EUR');
+assert('Documentdatum correct (kolom 7)',             r2.invoices[0].date   === '01/03/2026');
+assert('Tweede factuur: leverancier correct',         r2.invoices[1].vendor === 'Garage Pieter NV');
+assert('Tweede factuur: bedrag correct',              r2.invoices[1].amount === '880,00 EUR');
+
+// Test 3: groeperings-rijen (tr.group) worden niet meegeteld
+const r3 = parseApprovalPage(`
+  <html><body>
+    <table id="approvalsTable"><tbody>
+      <tr id="group-id-approvalsTable_gedeeld" class="">
+        <td class="group gedeeld">Gedeeld door DC.HEAD.ICT</td>
+        <td class="group text-right">1.706,69 EUR</td>
+      </tr>
+      <tr class="approvalLine pointer odd group-item">
+        <td></td><td>FAC-2026-003</td><td>Test Leverancier</td><td></td>
+        <td>1.706,69 EUR</td><td>2.065,10 EUR</td><td>20/03/2026</td><td>19/04/2026</td>
+      </tr>
+    </tbody></table>
+  </body></html>`);
+assert('Groeperings-rij niet meegeteld (alleen tr.approvalLine)', r3.invoices.length === 1);
+assert('Correcte factuur in gemixte tabel',                       r3.invoices[0].number === 'FAC-2026-003');
 
 const summary = document.createElement('h2');
 summary.textContent = `${passed} geslaagd, ${failed} mislukt`;
