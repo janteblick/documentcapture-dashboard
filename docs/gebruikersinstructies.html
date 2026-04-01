@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DocumentCapture Dashboard — Installation &amp; User Guide</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #2d3748;
+      background: #f7fafc;
+      padding: 40px 24px;
+    }
+    .page { max-width: 700px; margin: 0 auto; background: #fff; border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.08); overflow: hidden; }
+
+    /* Header */
+    .header { background: #1a73e8; color: #fff; padding: 32px 40px; }
+    .header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
+    .header p  { font-size: .95rem; opacity: .85; }
+
+    /* Body */
+    .body { padding: 36px 40px; }
+    h2 { font-size: 1.05rem; font-weight: 700; color: #1a73e8;
+         margin: 32px 0 14px; padding-bottom: 6px; border-bottom: 2px solid #ebf4ff; }
+    h2:first-child { margin-top: 0; }
+    p  { font-size: .93rem; line-height: 1.7; color: #4a5568; margin-bottom: 10px; }
+
+    /* Steps */
+    ol { padding-left: 0; list-style: none; counter-reset: steps; }
+    ol li {
+      counter-increment: steps;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 14px; font-size: .93rem; line-height: 1.6; color: #4a5568;
+    }
+    ol li::before {
+      content: counter(steps);
+      background: #1a73e8; color: #fff;
+      font-size: .8rem; font-weight: 700;
+      min-width: 24px; height: 24px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+
+    /* Tips / notes */
+    ul.tips { list-style: none; padding: 0; }
+    ul.tips li {
+      font-size: .9rem; color: #4a5568; line-height: 1.6;
+      padding: 8px 12px 8px 36px; position: relative; margin-bottom: 6px;
+      background: #f7fafc; border-radius: 4px;
+    }
+    ul.tips li::before { content: "✓"; position: absolute; left: 12px; color: #38a169; font-weight: 700; }
+
+    /* Inline code / paths */
+    code {
+      background: #edf2f7; color: #2d3748; padding: 1px 6px;
+      border-radius: 3px; font-family: 'Consolas', monospace; font-size: .88rem;
+    }
+
+    /* Download button */
+    .download-box {
+      background: #ebf4ff; border: 1px solid #bee3f8;
+      border-radius: 6px; padding: 16px 20px; margin: 16px 0;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .download-box a {
+      background: #1a73e8; color: #fff; text-decoration: none;
+      padding: 8px 20px; border-radius: 4px; font-size: .9rem; font-weight: 600;
+      white-space: nowrap;
+    }
+    .download-box a:hover { background: #1558b0; }
+    .download-box p { margin: 0; font-size: .88rem; color: #2b6cb0; }
+
+    /* Screenshot placeholder */
+    .screen {
+      background: #f0f4f8; border: 1px dashed #cbd5e0; border-radius: 6px;
+      padding: 14px 18px; margin: 12px 0; font-size: .85rem; color: #718096;
+      font-style: italic;
+    }
+
+    /* Section callout */
+    .callout {
+      background: #fffbeb; border-left: 4px solid #f6ad55;
+      padding: 12px 16px; border-radius: 0 4px 4px 0; margin: 14px 0;
+      font-size: .88rem; color: #744210; line-height: 1.6;
+    }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 12px 0; }
+    th { background: #ebf4ff; color: #2b6cb0; padding: 8px 12px; text-align: left; font-weight: 600; }
+    td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; color: #4a5568; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    /* Footer */
+    .footer { background: #f7fafc; border-top: 1px solid #e2e8f0;
+              padding: 18px 40px; font-size: .82rem; color: #718096; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>DocumentCapture Dashboard</h1>
+    <p>Chrome Extension — Installation &amp; User Guide</p>
+  </div>
+
+  <div class="body">
+
+    <!-- ── PART 1: INSTALLATION ── -->
+    <h2>Part 1 — Installation</h2>
+
+    <p>The extension is currently distributed as a ZIP file while awaiting Chrome Web Store approval.
+    Installation takes about 2 minutes.</p>
+
+    <div class="download-box">
+      <div>
+        <p><strong>Download the extension ZIP file:</strong></p>
+        <p>Ask the person who sent you this guide for the file, or download it directly:</p>
+      </div>
+      <a href="https://github.com/janteblick/documentcapture-dashboard/releases/latest/download/documentcapture-dashboard-v1.0.0.zip">Download ZIP</a>
+    </div>
+
+    <ol>
+      <li>
+        <span><strong>Unzip</strong> the downloaded file to a <em>permanent</em> location on your PC —
+        for example <code>C:\Extensions\DocumentCapture\</code><br>
+        <span style="color:#e53e3e;">⚠ Do not delete this folder after installation — Chrome needs it to stay there.</span></span>
+      </li>
+      <li>
+        <span>Open Chrome and navigate to <code>chrome://extensions</code></span>
+      </li>
+      <li>
+        <span>Turn on <strong>Developer mode</strong> using the toggle in the top-right corner of the page.</span>
+      </li>
+      <li>
+        <span>Click <strong>Load unpacked</strong> and select the folder you unzipped in step 1.</span>
+      </li>
+      <li>
+        <span>The <em>DocumentCapture Dashboard</em> extension now appears in the list. Click the
+        <strong>puzzle piece icon</strong> in the Chrome toolbar (top right) and
+        click the <strong>pin icon</strong> next to DocumentCapture Dashboard so it stays visible.</span>
+      </li>
+    </ol>
+
+    <div class="callout">
+      After a Chrome update, Developer mode extensions may show a warning asking you to
+      re-enable them. Simply go back to <code>chrome://extensions</code> and click <strong>Enable</strong>.
+    </div>
+
+    <!-- ── PART 2: FIRST-TIME SETUP ── -->
+    <h2>Part 2 — First-time setup</h2>
+
+    <ol>
+      <li><span>Click the <strong>DocumentCapture Dashboard</strong> icon in the toolbar.<br>
+        A new tab opens with the dashboard.</span></li>
+      <li><span>Click <strong>Settings</strong> (top right of the dashboard).</span></li>
+      <li>
+        <span><strong>Clusters</strong> — tick only the clusters you have access to:
+          <ul style="margin-top:6px; padding-left:18px; font-size:.9rem; color:#4a5568;">
+            <li>Sneyers</li><li>Jorssen</li><li>Gamotors</li><li>Belien</li>
+          </ul>
+        </span>
+      </li>
+      <li><span>Enter your <strong>Username</strong> and <strong>Password</strong>
+        (same credentials you use to log in to DocumentCapture).</span></li>
+      <li><span>Choose how long credentials should be remembered and how often the
+        dashboard should auto-refresh.</span></li>
+      <li><span>Click <strong>Save</strong> and close the Settings tab.</span></li>
+    </ol>
+
+    <!-- ── PART 3: USING THE DASHBOARD ── -->
+    <h2>Part 3 — Using the dashboard</h2>
+
+    <p>Click the extension icon in the toolbar to open the dashboard. It shows all your
+    clusters side by side, each with the companies you have access to.</p>
+
+    <table>
+      <thead>
+        <tr><th>Element</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Cluster card</strong></td>
+          <td>One card per cluster (Sneyers, Jorssen, …). Shows the total number of pending invoices for that cluster.</td>
+        </tr>
+        <tr>
+          <td><strong>Open ↗</strong> button</td>
+          <td>Opens the cluster's DocumentCapture portal in a new tab.</td>
+        </tr>
+        <tr>
+          <td><strong>Company name</strong> (blue, underlined)</td>
+          <td>Clickable link — opens the approval page for that specific company directly.</td>
+        </tr>
+        <tr>
+          <td><strong>Document</strong> column</td>
+          <td>The invoice number. Click it to open the invoice detail page in DocumentCapture.</td>
+        </tr>
+        <tr>
+          <td><strong>⤓</strong> icon</td>
+          <td>Downloads the invoice PDF directly.</td>
+        </tr>
+        <tr>
+          <td><strong>↺ Refresh</strong> button</td>
+          <td>Manually refreshes all clusters immediately.</td>
+        </tr>
+        <tr>
+          <td><strong>Auto-refresh</strong></td>
+          <td>The dashboard refreshes automatically at the interval set in Settings (default: every 5 minutes).</td>
+        </tr>
+        <tr>
+          <td><strong>✓ No pending approvals</strong></td>
+          <td>All invoices for that company have been approved — nothing left to do.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ── PART 4: TROUBLESHOOTING ── -->
+    <h2>Part 4 — Troubleshooting</h2>
+
+    <ul class="tips">
+      <li><strong>Dashboard shows "No credentials configured"</strong> — open Settings and save your username and password.</li>
+      <li><strong>"Login failed — check username and password"</strong> — verify your credentials are correct in Settings. They are the same as your DocumentCapture login.</li>
+      <li><strong>"No companies found in this cluster"</strong> — you may not have access to that cluster, or your account has expired. Untick it in Settings.</li>
+      <li><strong>Extension icon disappeared from toolbar</strong> — click the puzzle piece icon and re-pin DocumentCapture Dashboard.</li>
+      <li><strong>Chrome shows a warning after an update</strong> — go to <code>chrome://extensions</code> and click Enable next to DocumentCapture Dashboard.</li>
+      <li><strong>Data looks outdated</strong> — click ↺ Refresh to force an immediate update.</li>
+    </ul>
+
+  </div>
+
+  <div class="footer">
+    DocumentCapture Dashboard v1.0.0 &nbsp;·&nbsp;
+    Questions? Contact the person who distributed this extension.
+  </div>
+
+</div>
+</body>
+</html>
