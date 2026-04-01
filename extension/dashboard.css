@@ -110,6 +110,11 @@ main {
 }
 .invoice-table td { padding: 5px 8px; border-bottom: 1px solid #f0f0f0; }
 .invoice-table tr:last-child td { border-bottom: none; }
+.inv-link  { color: #1a73e8; text-decoration: underline; }
+.inv-link:hover { color: #1558b0; }
+.inv-actions { width: 28px; text-align: center; }
+.pdf-link  { color: #718096; text-decoration: none; font-size: 1rem; }
+.pdf-link:hover { color: #e53e3e; }
 
 /* ── States ── */
 .loading {

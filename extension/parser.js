@@ -24,10 +24,13 @@ export function parseApprovalPage(html) {
   const invoices = [];
 
   rows.forEach(row => {
-    const number = cell(row, CONFIG.invoiceNumberSelector);
-    const vendor = cell(row, CONFIG.invoiceVendorSelector);
-    const amount = cell(row, CONFIG.invoiceAmountSelector);
-    if (number) invoices.push({ number, vendor, amount });
+    const number     = cell(row, CONFIG.invoiceNumberSelector);
+    const vendor     = cell(row, CONFIG.invoiceVendorSelector);
+    const amount     = cell(row, CONFIG.invoiceAmountSelector);
+    const invoiceUrl = row.getAttribute('data-editurl') || '';
+    const pdfAnchor  = row.querySelector('td:nth-child(4) a[href*="/pdf/"]');
+    const pdfUrl     = pdfAnchor ? pdfAnchor.getAttribute('href') : '';
+    if (number) invoices.push({ number, vendor, amount, invoiceUrl, pdfUrl });
   });
 
   return { invoices };

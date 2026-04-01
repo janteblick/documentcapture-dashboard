@@ -82,15 +82,24 @@ function renderClusterResult(clusterName, result) {
           ? '<div class="no-invoices">✓ No pending approvals</div>'
           : `<table class="invoice-table">
           <thead>
-            <tr><th>Document</th><th>Name</th><th>Amount</th></tr>
+            <tr><th>Document</th><th>Name</th><th>Amount</th><th></th></tr>
           </thead>
           <tbody>
-            ${c.invoices.map(inv => `
-              <tr>
-                <td>${inv.number}</td>
+            ${c.invoices.map(inv => {
+              const base       = new URL(c.url).origin;
+              const invoiceHref = inv.invoiceUrl ? base + inv.invoiceUrl : '';
+              const pdfHref     = inv.pdfUrl     ? base + inv.pdfUrl     : '';
+              return `<tr>
+                <td>${invoiceHref
+                  ? `<a href="${invoiceHref}" target="_blank" class="inv-link">${inv.number}</a>`
+                  : inv.number}</td>
                 <td>${inv.vendor}</td>
                 <td>${inv.amount}</td>
-              </tr>`).join('')}
+                <td class="inv-actions">${pdfHref
+                  ? `<a href="${pdfHref}" target="_blank" class="pdf-link" title="Download PDF">⤓</a>`
+                  : ''}</td>
+              </tr>`;
+            }).join('')}
           </tbody>
         </table>`
         }
