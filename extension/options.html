@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Instellingen — DocumentCapture Dashboard</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <h1>Instellingen</h1>
+
+    <section>
+      <h2>Inloggegevens</h2>
+
+      <label for="username">Gebruikersnaam</label>
+      <input type="text" id="username" placeholder="DOMEIN\gebruikersnaam" autocomplete="username">
+
+      <label for="password">Wachtwoord</label>
+      <input type="password" id="password" autocomplete="current-password">
+
+      <label for="remember">Onthoud inloggegevens</label>
+      <select id="remember">
+        <option value="1">1 dag</option>
+        <option value="7" selected>7 dagen</option>
+        <option value="30">30 dagen</option>
+        <option value="0">Altijd</option>
+      </select>
+
+      <label for="refresh-interval">Automatisch vernieuwen</label>
+      <select id="refresh-interval">
+        <option value="1">Elke minuut</option>
+        <option value="5" selected>Elke 5 minuten</option>
+        <option value="15">Elke 15 minuten</option>
+        <option value="30">Elke 30 minuten</option>
+      </select>
+    </section>
+
+    <div class="actions">
+      <button id="save">Opslaan</button>
+    </div>
+
+    <div id="status" class="status hidden"></div>
+  </main>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
