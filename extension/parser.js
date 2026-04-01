@@ -5,7 +5,7 @@
  * UPDATE these selectors with your findings from Task 4 (discovery).
  * The defaults below use common Bootstrap/table patterns as a starting point.
  */
-export const CONFIG = {
+export const CONFIG = Object.freeze({
   approvalPath:           '/Approval',              // UPDATE: exact path from Task 4
   companySelector:        '.company-group',         // UPDATE: container per bedrijf
   companyNameSelector:    'h3, h4, .company-name',  // UPDATE
@@ -14,7 +14,7 @@ export const CONFIG = {
   invoiceDateSelector:    'td:nth-child(2)',         // UPDATE
   invoiceAmountSelector:  'td:nth-child(3)',         // UPDATE
   invoiceVendorSelector:  'td:nth-child(4)',         // UPDATE or leave empty string '' if absent
-};
+});  // Object.freeze prevents accidental mutation across module imports
 
 /**
  * Parses the approval page HTML into structured data.

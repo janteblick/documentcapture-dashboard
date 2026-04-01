@@ -58,7 +58,10 @@ function renderClusterResult(clusterName, result) {
   if (result.error) {
     countEl.textContent = '!';
     countEl.className   = 'cluster-count error';
-    bodyEl.innerHTML    = `<div class="error-state">${result.error}</div>`;
+    const errDiv = document.createElement('div');
+    errDiv.className = 'error-state';
+    errDiv.textContent = result.error;
+    bodyEl.replaceChildren(errDiv);
     return;
   }
 
@@ -117,13 +120,18 @@ function updateFooter(results) {
 
 // ── Main refresh ────────────────────────────────────────────────────────────
 
+let refreshInProgress = false;
+
 async function refresh() {
+  if (refreshInProgress) return;
+  refreshInProgress = true;
   document.getElementById('refresh-btn').disabled = true;
 
   const creds = await getCredentials();
   if (!creds) {
     renderNotConfigured();
     document.getElementById('refresh-btn').disabled = false;
+    refreshInProgress = false;
     return;
   }
 
@@ -146,6 +154,7 @@ async function refresh() {
 
   updateFooter(results);
   document.getElementById('refresh-btn').disabled = false;
+  refreshInProgress = false;
 }
 
 // ── Auto-refresh ────────────────────────────────────────────────────────────
