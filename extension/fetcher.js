@@ -63,20 +63,29 @@ async function loginToCluster(baseUrl, username, password) {
  * @returns {Promise<Array<{name: string, url: string}>>}
  */
 async function fetchCompanyLinks(baseUrl, companyCode) {
-  const sectionUrl = new URL(
+  const targetUrl = new URL(
     `/purchaseapproval/getcompanysection?companycode=${encodeURIComponent(companyCode)}&menuCode=purchase&subMenuCode=approval`,
     baseUrl
   ).href;
 
-  const res = await fetch(sectionUrl, {
-    credentials: 'include',
-    mode: 'cors',
-    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  // The request must be same-origin (server rejects X-Requested-With from
+  // chrome-extension origin). Delegate to background.js which injects a tab.
+  const html = await new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(
+      { type: 'FETCH_COMPANY_LINKS', baseUrl, targetUrl },
+      reply => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+        } else if (reply.error) {
+          reject(new Error(reply.error));
+        } else {
+          resolve(reply.html);
+        }
+      }
+    );
   });
-  if (!res.ok) throw new Error(`Company list unreachable (HTTP ${res.status})`);
 
-  const html = await res.text();
-  const doc  = new DOMParser().parseFromString(html, 'text/html');
+  const doc = new DOMParser().parseFromString(html, 'text/html');
 
   // Company links: <a href="/{code}/purchase/approval"><strong>Name</strong>...</a>
   const anchors = Array.from(doc.querySelectorAll('a[href*="/purchase/approval"]'))

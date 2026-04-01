@@ -3,7 +3,7 @@
   "name": "DocumentCapture Dashboard",
   "version": "1.0.0",
   "description": "Overzicht openstaande factuurgoedkeuringen over alle clusters",
-  "permissions": ["storage"],
+  "permissions": ["storage", "tabs", "scripting"],
   "host_permissions": [
     "https://sneyers.documentcapture.eu/*",
     "https://jorssen.documentcapture.eu/*",
