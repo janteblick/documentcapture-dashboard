@@ -129,7 +129,7 @@ export async function loginAndFetchAll(baseUrl, username, password) {
   const companies = await Promise.all(
     companyLinks.map(async ({ name, url }) => {
       const html = await fetchPage(url);
-      return { name, html };
+      return { name, html, url };
     })
   );
 

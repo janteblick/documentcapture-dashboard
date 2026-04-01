@@ -75,7 +75,7 @@ function renderClusterResult(clusterName, result) {
     .map(c => `
       <div class="company-group">
         <div class="company-name">
-          ${c.name}
+          <a href="${c.url}" target="_blank" class="company-link">${c.name}</a>
           <span class="inv-badge">${c.invoices.length}</span>
         </div>
         ${c.invoices.length === 0
@@ -137,8 +137,9 @@ async function refresh() {
     activeClusters.map(async cluster => {
       try {
         const { companies: rawCompanies } = await loginAndFetchAll(cluster.url, creds.username, creds.password);
-        const companies = rawCompanies.map(({ name, html }) => ({
+        const companies = rawCompanies.map(({ name, html, url }) => ({
           name,
+          url,
           invoices: parseApprovalPage(html).invoices,
         }));
         renderClusterResult(cluster.name, { companies });

@@ -87,6 +87,8 @@ main {
 /* ── Company group ── */
 .company-group  { margin-top: 14px; }
 .company-name   { font-size: .85rem; font-weight: 600; color: #4a5568; margin-bottom: 6px; }
+.company-link   { color: #4a5568; text-decoration: none; }
+.company-link:hover { color: #1a73e8; text-decoration: underline; }
 .inv-badge {
   display: inline-block;
   background: #ebf4ff;
