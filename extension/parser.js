@@ -2,18 +2,21 @@
 // Pure functions: HTML string → structured data objects. No side effects, no network calls.
 // Selectors verified against Continia Document Capture live site on 2026-04-01.
 
+// Actual column layout (verified 2026-04-01):
+// td[1]=checkbox  td[2]=actions  td[3]=Document  td[4]=Naam
+// td[5]=Commentaren  td[6]=Bedrag excl.BTW  td[7]=Bedrag incl.BTW
+// td[8]=Documentdatum  td[9]=Vervaldatum  td[10]=empty
 export const CONFIG = Object.freeze({
   invoiceRowSelector:    'tr.approvalLine',  // each invoice row in #approvalsTable
-  invoiceNumberSelector: 'td:nth-child(2)',  // "Document" column
-  invoiceVendorSelector: 'td:nth-child(3)',  // "Naam" column
-  invoiceAmountSelector: 'td:nth-child(5)',  // "Bedrag excl. BTW" column
-  invoiceDateSelector:   'td:nth-child(7)',  // "Documentdatum" column
+  invoiceNumberSelector: 'td:nth-child(3)',  // "Document" column
+  invoiceVendorSelector: 'td:nth-child(4)',  // "Naam" column
+  invoiceAmountSelector: 'td:nth-child(6)',  // "Bedrag excl. BTW" column
 });
 
 /**
  * Parses a single company's approval page HTML.
  * @param {string} html
- * @returns {{ invoices: Array<{ number: string, vendor: string, amount: string, date: string }> }}
+ * @returns {{ invoices: Array<{ number: string, vendor: string, amount: string }> }}
  */
 export function parseApprovalPage(html) {
   const doc    = new DOMParser().parseFromString(html, 'text/html');
@@ -24,8 +27,7 @@ export function parseApprovalPage(html) {
     const number = cell(row, CONFIG.invoiceNumberSelector);
     const vendor = cell(row, CONFIG.invoiceVendorSelector);
     const amount = cell(row, CONFIG.invoiceAmountSelector);
-    const date   = cell(row, CONFIG.invoiceDateSelector);
-    if (number) invoices.push({ number, vendor, amount, date });
+    if (number) invoices.push({ number, vendor, amount });
   });
 
   return { invoices };

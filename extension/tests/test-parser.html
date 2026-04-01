@@ -29,32 +29,32 @@ function assert(desc, condition) {
 const r1 = parseApprovalPage('<html><body></body></html>');
 assert('Lege HTML geeft geen facturen', r1.invoices.length === 0);
 
-// Test 2: real Continia structure — tr.approvalLine rows, columns match live site
-// Columns: Acties(1) | Document(2) | Naam(3) | Commentaren(4) | Bedrag excl.BTW(5) | Bedrag incl.BTW(6) | Documentdatum(7) | Vervaldatum(8)
+// Test 2: real Continia structure — 10-column layout verified 2026-04-01
+// td[1]=checkbox td[2]=actions td[3]=Document td[4]=Naam td[5]=Commentaren
+// td[6]=Bedrag excl.BTW td[7]=Bedrag incl.BTW td[8]=Documentdatum td[9]=Vervaldatum td[10]=empty
 const r2 = parseApprovalPage(`
   <html><body>
     <table id="approvalsTable">
       <thead>
-        <tr><th>Acties</th><th>Document</th><th>Naam</th><th>Commentaren</th>
-            <th>Bedrag excl. BTW</th><th>Bedrag incl. BTW</th><th>Documentdatum</th><th>Vervaldatum</th></tr>
+        <tr><th></th><th>Acties</th><th>Document</th><th>Naam</th><th>Commentaren</th>
+            <th>Bedrag excl. BTW</th><th>Bedrag incl. BTW</th><th>Documentdatum</th><th>Vervaldatum</th><th></th></tr>
       </thead>
       <tbody>
         <tr class="approvalLine pointer odd">
-          <td></td><td>FAC-2026-001</td><td>Leverancier A BV</td><td></td>
-          <td>1.250,00 EUR</td><td>1.512,50 EUR</td><td>01/03/2026</td><td>31/03/2026</td>
+          <td></td><td></td><td>FAC-2026-001</td><td>Leverancier A BV</td><td></td>
+          <td>1.250,00 EUR</td><td>1.512,50 EUR</td><td>01/03/2026</td><td>31/03/2026</td><td></td>
         </tr>
         <tr class="approvalLine pointer even">
-          <td></td><td>FAC-2026-002</td><td>Garage Pieter NV</td><td>spoed</td>
-          <td>880,00 EUR</td><td>1.064,80 EUR</td><td>15/03/2026</td><td>14/04/2026</td>
+          <td></td><td></td><td>FAC-2026-002</td><td>Garage Pieter NV</td><td>spoed</td>
+          <td>880,00 EUR</td><td>1.064,80 EUR</td><td>15/03/2026</td><td>14/04/2026</td><td></td>
         </tr>
       </tbody>
     </table>
   </body></html>`);
 assert('2 facturen gevonden (tr.approvalLine)',       r2.invoices.length === 2);
-assert('Factuurnummer correct (kolom 2)',              r2.invoices[0].number === 'FAC-2026-001');
-assert('Leverancier correct (kolom 3)',               r2.invoices[0].vendor === 'Leverancier A BV');
-assert('Bedrag excl. BTW correct (kolom 5)',          r2.invoices[0].amount === '1.250,00 EUR');
-assert('Documentdatum correct (kolom 7)',             r2.invoices[0].date   === '01/03/2026');
+assert('Factuurnummer correct (kolom 3)',              r2.invoices[0].number === 'FAC-2026-001');
+assert('Leverancier correct (kolom 4)',               r2.invoices[0].vendor === 'Leverancier A BV');
+assert('Bedrag excl. BTW correct (kolom 6)',          r2.invoices[0].amount === '1.250,00 EUR');
 assert('Tweede factuur: leverancier correct',         r2.invoices[1].vendor === 'Garage Pieter NV');
 assert('Tweede factuur: bedrag correct',              r2.invoices[1].amount === '880,00 EUR');
 
@@ -67,8 +67,8 @@ const r3 = parseApprovalPage(`
         <td class="group text-right">1.706,69 EUR</td>
       </tr>
       <tr class="approvalLine pointer odd group-item">
-        <td></td><td>FAC-2026-003</td><td>Test Leverancier</td><td></td>
-        <td>1.706,69 EUR</td><td>2.065,10 EUR</td><td>20/03/2026</td><td>19/04/2026</td>
+        <td></td><td></td><td>FAC-2026-003</td><td>Test Leverancier</td><td></td>
+        <td>1.706,69 EUR</td><td>2.065,10 EUR</td><td>20/03/2026</td><td>19/04/2026</td><td></td>
       </tr>
     </tbody></table>
   </body></html>`);
