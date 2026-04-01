@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "DocumentCapture Dashboard",
   "version": "1.0.0",
-  "description": "Overzicht openstaande factuurgoedkeuringen over alle clusters",
+  "description": "Overview of pending invoice approvals across all Continia Document Capture clusters.",
   "permissions": ["storage", "tabs", "scripting"],
   "host_permissions": [
     "https://sneyers.documentcapture.eu/*",
